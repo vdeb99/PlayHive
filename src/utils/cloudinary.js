@@ -1,23 +1,35 @@
-import {v2 as cloudinary} from "cloudinary"
-import fs from "fs"
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
-const uploadToCloudinary=async(file)=>{
-    try{
-        if(!file)
-            return null
-        const response=await cloudinary.uploader.upload(file.path,{
-            resource_type:"auto"
+
+const uploadToCloudinary = async (filePath) => {
+    try {
+        if (!filePath || !fs.existsSync(filePath)) {
+            throw new Error("File does not exist: " + filePath);
+        }
+
+        console.log("Uploading to Cloudinary:", filePath);
+
+        const response = await cloudinary.uploader.upload(filePath, {
+            resource_type: "auto"
         });
-        console.log("File uploaded to cloudinary ",response.url)
-        return response
+
+        console.log("File uploaded to Cloudinary:", response.url);
+
+        
+        fs.unlinkSync(filePath);
+
+        return response;
+    } catch (error) {
+        console.error("Cloudinary upload error:", error);
+        return null
     }
-    catch(error){
-        fs.linkSync(file)
-        console.log(error)
-    }
-}
+};
+
+
 export default uploadToCloudinary;
