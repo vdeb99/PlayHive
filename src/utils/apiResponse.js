@@ -6,3 +6,4 @@ class apiResponse{
         this.success=statuscode
     }
 }
+export default apiResponse;
