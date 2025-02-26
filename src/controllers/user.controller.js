@@ -4,7 +4,7 @@ import {User} from "../models/user.model.js";
 import uploadToCloudinary from "../utils/cloudinary.js";
 import apiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
-import { lookup } from "dns";
+import mongoose from "mongoose";
 const generateAccessAndRefreshToken=async(userId)=>{
     try{
         const user=await User.findById(userId)
@@ -149,7 +149,11 @@ const refreshToken=asyncHandler(async(req,res)=>{
 })
 const changeCurrentPassword=asyncHandler(async(req,res)=>{
     const {oldPassword,newPassword}=req.body
+    
     const user=await User.findById(req.user?._id)
+    if(!user){
+        throw new apiError(400,"User not found")
+    }
     const isPasswordCorrect=await user.isPasswordCorrect(oldPassword)
     if(!isPasswordCorrect){
         throw new apiError(400,"Invalid password")
@@ -162,16 +166,16 @@ const changeCurrentPassword=asyncHandler(async(req,res)=>{
 
 })
 const getCurrentUser=asyncHandler(async(req,res)=>{
-    return res
-    .status(200)
-    .json(200,req.user,"User fetched successfully")
+    return res.status(200).json(new apiResponse(200,req.user,"User fetched successfully"))
 })
 const updateAccountDetails=asyncHandler(async(req,res)=>{
     const {fullName,email}=req.body
     if(!fullName && !email){
         throw new apiError(400,"Full name or email is required")
     }
-    const user=User.findByIdAndUpdate(req.user._id,{$set:{fullName,email}},{new:true}).select("-password -refreshToken")
+    
+    const user=await User.findByIdAndUpdate(req.user._id,{$set:{fullName,email}},{new:true}).select("-password -refreshToken")
+    
     return res
     .status(200)
     .json(new apiResponse(200,user,"User updated successfully"))
@@ -270,49 +274,56 @@ const getUserChannelProfile=asyncHandler(async(req,res)=>{
     .status(200)
     .json(new apiResponse(200,channel[0],"Channel fetched successfully"))
 })
-const getWatchHistory=asyncHandler(async(req,res)=>{
-    const user=await User.aggregate([
+const getWatchHistory = asyncHandler(async (req, res) => {
+    const user = await User.aggregate([
         {
-            $match:{
-                _id:new mongoose.Types.ObjectId(req.user?._id)
-            },
-            $lookup:{
-                from:"videos",
-                localField:"watchHistory",
-                foreignField:"_id",
-                as:"watchHistory",
-                pipeline:[
-                    {
-                        $lookup:{
-                            from:"users",
-                            localField:"owner",
-                            foreignField:"_id",
-                            as:"owner",
-                            pipeline:[
-                                {
-                                    $project:{
-                                        fullName:1,
-                                        username:1,
-                                        avatar:1
-                                    }
-                                },
-                                {
-                                    $addFields:{
-                                        owner:{
-                                            $first:"$owner"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                        
-                    }
-                ]
+            $match: { _id: new mongoose.Types.ObjectId(req.user?._id) }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory"
+            }
+        },
+        {
+            $unwind: { path: "$watchHistory", preserveNullAndEmptyArrays: true }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "watchHistory.owner",
+                foreignField: "_id",
+                as: "watchHistory.owner"
+            }
+        },
+        {
+            $addFields: {
+                "watchHistory.owner": { $first: "$watchHistory.owner" }
+            }
+        },
+        {
+            $project: {
+                "watchHistory._id": 1,
+                "watchHistory.title": 1,
+                "watchHistory.thumbnail": 1,
+                "watchHistory.owner.fullName": 1,
+                "watchHistory.owner.username": 1,
+                "watchHistory.owner.avatar": 1
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                watchHistory: { $push: "$watchHistory" }
             }
         }
-    ])
-    return res
-    .status(200)
-    .json(new apiResponse(200,user[0]?.watchHistory || [],"Watch history fetched successfully"))
-})
-export {registerUser,loginUser,logoutUser,refreshToken,changeCurrentPassword,getCurrentUser,updateAccountDetails,updateUserAvatar,updateUserCoverImage,getWatchHistory};
+    ]);
+
+    return res.status(200).json(
+        new apiResponse(200, user[0]?.watchHistory || [], "Watch history fetched successfully")
+    );
+});
+
+export {registerUser,loginUser,logoutUser,refreshToken,changeCurrentPassword,getCurrentUser,updateAccountDetails,updateUserAvatar,updateUserCoverImage,getWatchHistory,getUserChannelProfile};
