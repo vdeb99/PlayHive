@@ -62,6 +62,13 @@ userSchema.pre("save",async function(next){
 
 })
 userSchema.methods.isPasswordCorrect=async function(password){
+    
+    if(!this.password){
+        throw new Error("Hashed Password is required")
+    }
+    if(!password){
+        throw new Error("Password is required")
+    }
     return await bcrypt.compare(password,this.password)
 }
 userSchema.methods.generateAccessToken=function(){
