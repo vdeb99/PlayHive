@@ -8,9 +8,55 @@ import uploadToCloudinary from "../utils/cloudinary.js"
 
 
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
-    //TODO: get all videos based on query, sort, pagination
-})
+    const { page = 1, limit = 10, query = "", sortBy = "createdAt", sortType = "desc", userId } = req.query;
+
+    const matchStage = {};
+
+    
+    if (query) {
+        matchStage.$or = [
+            { title: { $regex: query, $options: "i" } },
+            { description: { $regex: query, $options: "i" } }
+        ];
+    }
+
+    
+    if (userId && isValidObjectId(userId)) {
+        matchStage.userId = new mongoose.Types.ObjectId(userId);
+    }
+
+    const sortStage = {};
+    sortStage[sortBy] = sortType === "asc" ? 1 : -1;
+
+    const videosPipeline = [
+        { $match: matchStage },  // Apply filtering conditions
+        { $sort: sortStage },    // Sort results
+        { $skip: (page - 1) * limit }, // Pagination: Skip previous pages
+        { $limit: parseInt(limit) },   // Limit results per page
+        {
+            $project: {
+                _id: 1,
+                title: 1,
+                description: 1,
+                thumbnail: 1,
+                videoFile: 1,
+                duration: 1,
+                isPublished: 1,
+                createdAt: 1,
+                updatedAt: 1
+            }
+        }
+    ];
+
+    // Run the aggregation pipeline
+    const videos = await Video.aggregate(videosPipeline);
+
+    // Get the total count of videos matching the filter
+    const totalVideos = await Video.countDocuments(matchStage);
+
+    res.status(200).json(new apiResponse(200, { videos, totalVideos, page, limit }));
+});
+
 
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description} = req.body
@@ -52,6 +98,9 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params
+    if(!isValidObjectId(videoId)){
+        throw new apiError(400,"Invalid videoId")
+    }
     const video=await Video.findById(videoId)
     if(!video){
         throw new apiError(404,"Video not found")
@@ -61,19 +110,15 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    const videoExist=await Video.findById(videoId)
-    if(!videoExist)
-    {
-        throw new apiError(404,"Video not found")
+    if(!isValidObjectId(videoId)){
+        throw new apiError(400,"Invalid videoId")
     }
     const {updatedTitle,updatedDescription}=req.body//later try to update thumbnail and videoFile
     if(!(updatedTitle || updatedDescription )){
         throw new apiError(400,"Atleast one field is required")
     }
-    // if(Video.findOne({$and:[{title},{description}]})){
-    //     throw new apiError(400,"Video already exists")
-    // }
-    const videoUpdated=await Video.findByIdAndUpdate(videoId,{title:updatedTitle,description:updatedDescription})
+    
+    const videoUpdated=await Video.findByIdAndUpdate(videoId,{title:updatedTitle,description:updatedDescription},{new:true})
     if(!videoUpdated){
         throw new apiError(500,"Error updating video")
     }
@@ -84,10 +129,8 @@ const updateVideo = asyncHandler(async (req, res) => {
 
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    const videoExist=await Video.findById(videoId)
-    if(!videoExist)
-    {
-        throw new apiError(404,"Video not found")
+    if(!isValidObjectId(videoId)){
+        throw new apiError(400,"Invalid videoId")
     }
     await Video.deleteOne({_id:videoId})
     res.status(200).json(new apiResponse(200,{message:"Video deleted successfully"}))
@@ -95,12 +138,12 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    const videoExist=await Video.findById(videoId)
-    if(!videoExist)
-    {
-        throw new apiError(404,"Video not found")
+    
+    if(!isValidObjectId(videoId)){
+        throw new apiError(400,"Invalid videoId")
     }
-    const videoUpdated=await Video.findByIdAndUpdate(videoId,{isPublished:!videoExist.isPublished})
+    const video=await Video.findById(videoId)
+    const videoUpdated=await Video.findByIdAndUpdate(videoId,{isPublished:!video.isPublished},{new:true})
     if(!videoUpdated){
         throw new apiError(500,"Error updating video")
     }
