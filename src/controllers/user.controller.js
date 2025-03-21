@@ -66,12 +66,7 @@ const registerUser=asyncHandler(async(req,res)=>{
     
 })
 const loginUser=asyncHandler(async(req,res)=>{
-    //req.body
-    //username,email,password
-    //find user by username or email
-    //compare password
-    //generate token
-    //pass token through cookies
+   
     const {username,email,password}=req.body
     if(!username && !email){
         throw new apiError(400,"Username or email is required")

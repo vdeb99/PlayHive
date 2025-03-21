@@ -10,42 +10,44 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
         throw new apiError(400,"Invalid videoId")
     }
     const userId=req.user._id
-    const like =await Like.findOne({video:videoId,user:userId})
+    const like =await Like.findOne({video:videoId,LikedBy:userId})
     if(like){
         await Like.findByIdAndDelete(like._id)
     }
     if(!like){
-        await Like.create({video:videoId,user:userId})
+        await Like.create({video:videoId,LikedBy:userId})
     }
     res.status(200).json(new apiResponse(200,{message:"Like toggled"}))
-    //TODO: toggle like on video
+    
 })
 
 
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
-    //TODO: toggle like on tweet
+    
     const {tweetId} = req.params
-    if(!isValidObjectId(tweetId)){
+    if(!mongoose.Types.ObjectId.isValid(tweetId)){
         throw new apiError(400,"Invalid tweetId")
     }
     const userId=req.user._id
-    const tweetLike =await Like.findOne({tweet:tweetId,user:userId})
+    const tweetLike =await Like.findOne({tweet:tweetId,LikedBy:userId})
     if(tweetLike){
         await Like.findByIdAndDelete(tweetLike._id)
+        res.status(200).json(new apiResponse(200,{message:"Disliked"}))
     }
     if(!tweetLike){
-        await Like.create({tweet:tweetId,user:userId})
+        await Like.create({tweet:tweetId,LikedBy:userId})
+        res.status(200).json(new apiResponse(200,{message:"Liked"}))
     }
-    res.status(200).json(new apiResponse(200,{message:"Like toggled"}))
+    
     
 }
 )
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-    //TODO: get all liked videos
+    
     const userId=req.user._id
-    const likedVideos=await Like.find({user:userId}).populate("video")
+    const likedVideos=await Like.find({LikedBy:userId}).populate("video")
     res.status(200).json(new apiResponse(200,{likedVideos}))
 
 })

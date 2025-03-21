@@ -33,7 +33,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 
 const getPlaylistById = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
-    if(isValidObjectId(playlistId)){
+    if(!mongoose.Types.ObjectId.isValid(playlistId)){
         throw new apiError(400,"Invalid playlistId")
     }
     const playlist=await Playlist.findById(playlistId)

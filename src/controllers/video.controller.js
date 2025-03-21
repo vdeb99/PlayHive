@@ -29,10 +29,10 @@ const getAllVideos = asyncHandler(async (req, res) => {
     sortStage[sortBy] = sortType === "asc" ? 1 : -1;
 
     const videosPipeline = [
-        { $match: matchStage },  // Apply filtering conditions
-        { $sort: sortStage },    // Sort results
-        { $skip: (page - 1) * limit }, // Pagination: Skip previous pages
-        { $limit: parseInt(limit) },   // Limit results per page
+        { $match: matchStage }, 
+        { $sort: sortStage },   
+        { $skip: (page - 1) * limit },
+        { $limit: parseInt(limit) },  
         {
             $project: {
                 _id: 1,
@@ -48,10 +48,10 @@ const getAllVideos = asyncHandler(async (req, res) => {
         }
     ];
 
-    // Run the aggregation pipeline
+    
     const videos = await Video.aggregate(videosPipeline);
 
-    // Get the total count of videos matching the filter
+    
     const totalVideos = await Video.countDocuments(matchStage);
 
     res.status(200).json(new apiResponse(200, { videos, totalVideos, page, limit }));
@@ -113,7 +113,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     if(!isValidObjectId(videoId)){
         throw new apiError(400,"Invalid videoId")
     }
-    const {updatedTitle,updatedDescription}=req.body//later try to update thumbnail and videoFile
+    const {updatedTitle,updatedDescription}=req.body
     if(!(updatedTitle || updatedDescription )){
         throw new apiError(400,"Atleast one field is required")
     }

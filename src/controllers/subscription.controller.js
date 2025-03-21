@@ -9,7 +9,7 @@ import asyncHandler from "../utils/asyncHandler.js"
 const toggleSubscription = asyncHandler(async (req, res) => {
     const { channelId } = req.params;
 
-    console.log("Received channelId:", channelId); // Debugging log
+    console.log("Received channelId:", channelId); 
 
     if (!mongoose.Types.ObjectId.isValid(channelId)) {
         throw new apiError(400, "Invalid channel id format");
@@ -33,9 +33,9 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 });
 
 
-// controller to return subscriber list of a channel
+
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
-    console.log("Full Request Params:", req.params); // Log request params
+    console.log("Full Request Params:", req.params); 
 
     const { channelId } = req.params;
 
@@ -43,10 +43,10 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
         return res.status(400).json({ error: "channelId is missing in request parameters" });
     }
 
-    console.log("Extracted channelId:", channelId); // Debugging log
+    console.log("Extracted channelId:", channelId);
 
     if (!mongoose.Types.ObjectId.isValid(channelId)) {
-        console.error("Invalid channelId format:", channelId); // Log invalid ID
+        console.error("Invalid channelId format:", channelId); 
         throw new apiError(400, "Invalid channel id format");
     }
 
@@ -62,7 +62,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
 
 
-// controller to return channel list to which user has subscribed
+
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const  subscriberId  = req.user._id
     if(!isValidObjectId(subscriberId)){
