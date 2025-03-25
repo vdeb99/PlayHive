@@ -16,7 +16,7 @@ const uploadToCloudinary = async (filePath) => {
         console.log("Uploading to Cloudinary:", filePath);
 
         const response = await cloudinary.uploader.upload(filePath, {
-            folder:"/home/PlayHive",
+            folder:"PlayHive",
             resource_type: "auto"
         });
 
