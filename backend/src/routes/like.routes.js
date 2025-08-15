@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import {
     getLikedVideos,
-    
     toggleVideoLike,
     toggleTweetLike,
 } from "../controllers/like.controller.js"
