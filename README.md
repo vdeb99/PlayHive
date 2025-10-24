@@ -36,7 +36,6 @@ Backend API for PlayHive - A comprehensive video streaming and content platform 
 ### Content Delivery
 - 🎥 **Video Streaming** - Efficient video streaming with chunking
 - 🔄 **Adaptive Streaming** - Support for multiple video qualities
-- 💾 **Cloud Storage Integration** - AWS S3 or Cloudinary for media storage
 - 🚀 **CDN Integration** - Fast content delivery
 
 ## Tech Stack
@@ -48,8 +47,6 @@ Backend API for PlayHive - A comprehensive video streaming and content platform 
 - **JWT** - JSON Web Tokens for authentication
 - **Bcrypt** - Password hashing
 - **Multer** - File upload handling
-- **Cloudinary/AWS S3** - Cloud storage for media files
-- **Nodemailer** - Email sending functionality
 - **Express Validator** - Request validation
 - **Cors** - Cross-origin resource sharing
 - **Dotenv** - Environment variable management
@@ -61,7 +58,7 @@ Backend API for PlayHive - A comprehensive video streaming and content platform 
 - Node.js (v14 or higher)
 - MongoDB (local or MongoDB Atlas)
 - npm or yarn
-- Cloud storage account (Cloudinary or AWS S3)
+- Cloud storage account (Cloudinary)
 
 ### Installation
 
@@ -90,15 +87,6 @@ JWT_EXPIRE=7d
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
-
-# Email Configuration
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
-
-# Frontend URL
-CLIENT_URL=http://localhost:5173
 
 # Node Environment
 NODE_ENV=development
@@ -322,7 +310,7 @@ router.get('/profile', authMiddleware, getUserProfile);
 
 Multer is used for handling file uploads:
 
-- **Videos** - Uploaded to cloud storage (Cloudinary/S3)
+- **Videos** - Uploaded to cloud storage (Cloudinary)
 - **Images** - Thumbnails and profile pictures
 - **File validation** - Size limits and file type checking
 - **Automatic optimization** - Images are compressed and optimized
@@ -345,10 +333,7 @@ Centralized error handling middleware:
 - **Password Hashing** - Bcrypt with salt rounds
 - **JWT Authentication** - Secure token-based auth
 - **Input Validation** - Express validator for all inputs
-- **XSS Protection** - Sanitize user inputs
-- **Rate Limiting** - Prevent API abuse
 - **CORS Configuration** - Controlled cross-origin requests
-- **Helmet** - Security headers
 - **MongoDB Injection Prevention** - Query sanitization
 
 ## Environment Variables
@@ -363,11 +348,6 @@ JWT_EXPIRE             # Token expiration time
 CLOUDINARY_CLOUD_NAME  # Cloudinary cloud name
 CLOUDINARY_API_KEY     # Cloudinary API key
 CLOUDINARY_API_SECRET  # Cloudinary API secret
-SMTP_HOST              # Email server host
-SMTP_PORT              # Email server port
-SMTP_USER              # Email username
-SMTP_PASSWORD          # Email password
-CLIENT_URL             # Frontend URL for CORS
 NODE_ENV               # Environment (development/production)
 ```
 
@@ -388,39 +368,9 @@ npm run test:coverage   # Generate coverage report
 3. Configure cloud storage credentials
 4. Set NODE_ENV to 'production'
 
-### Deploy Options
 
-**Heroku:**
-```bash
-heroku create playhive-api
-git push heroku main
-```
 
-**AWS EC2:**
-```bash
-# Use PM2 for process management
-pm2 start server.js --name playhive-api
-pm2 startup
-pm2 save
-```
 
-**Docker:**
-```bash
-docker build -t playhive-backend .
-docker run -p 8000:8000 playhive-backend
-```
-
-### Docker Configuration
-
-```dockerfile
-FROM node:16-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
-COPY . .
-EXPOSE 8000
-CMD ["npm", "start"]
-```
 
 ## Performance Optimization
 
