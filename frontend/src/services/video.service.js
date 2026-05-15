@@ -8,8 +8,8 @@ const deleteVideo=async(videoId)=>{
     return await app.delete(`/videos/${videoId}`)
 }
 
-const getUserVideos=async(userId)=>{
-    return await app.get(`/videos/user/${userId}`)
+const getUserVideos=async(username)=>{
+    return await app.get(`/videos/user/${username}`)
 }
 
 const getVideoById=async(videoId)=>{
