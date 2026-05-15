@@ -16,9 +16,14 @@ const getUserTweets=async(userId)=>{
     return await app.get(`/tweets/user/${userId}`)
 }
 
+const getAllTweets=async()=>{
+    return await app.get("/tweets")
+}
+
 export {
     updateTweet,
     createTweet,
     deleteTweet,
-    getUserTweets
+    getUserTweets,
+    getAllTweets
 }
