@@ -1,75 +1,113 @@
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 
 import { loginUser } from "../../services/auth.service";
-
-import {
-    loginStart,
-    loginSuccess,
-    loginFailure,
-} from "../../redux/slices/authSlice";
+import { loginSuccess } from "../../redux/slices/authSlice";
 
 function LoginForm() {
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { register, handleSubmit } = useForm();
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
 
-    const onSubmit = async (data) => {
+    const [loading, setLoading] = useState(false);
 
-        dispatch(loginStart());
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!formData.email || !formData.password) {
+            toast.error("Please fill all fields.");
+            return;
+        }
 
         try {
+            setLoading(true);
 
-            const response = await loginUser(data);
+            const response = await loginUser(formData);
+
+            console.log(response.data);
 
             dispatch(loginSuccess(response.data.data.user));
 
-            alert("Login Successful");
+            toast.success("Login Successful!");
+
+            navigate("/");
 
         } catch (error) {
+            console.error(error);
 
-            dispatch(
-                loginFailure(
-                    error.response?.data?.message || "Login Failed"
-                )
+            toast.error(
+                error.response?.data?.message ||
+                "Login Failed"
             );
-
+        } finally {
+            setLoading(false);
         }
-
     };
 
-
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="bg-zinc-900 p-8 rounded-xl w-96 space-y-4"
-        >
+        <div className="w-full max-w-md bg-zinc-900 rounded-2xl p-8 shadow-lg">
 
-            <h1 className="text-3xl text-white font-bold">
+            <h1 className="text-3xl font-bold text-center mb-8">
                 Login
             </h1>
 
-            <input
-                {...register("email")}
-                placeholder="Email"
-                className="w-full p-3 rounded bg-zinc-800 text-white"
-            />
-
-            <input
-                type="password"
-                {...register("password")}
-                placeholder="Password"
-                className="w-full p-3 rounded bg-zinc-800 text-white"
-            />
-
-            <button
-                className="w-full bg-red-600 p-3 rounded text-white"
+            <form
+                onSubmit={handleSubmit}
+                className="space-y-5"
             >
-                Login
-            </button>
 
-        </form>
+                <input
+                    type="text"
+                    name="email"
+                    placeholder="Email or Username"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
+                />
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
+                />
+
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-red-600 hover:bg-red-700 py-3 rounded-lg font-semibold transition"
+                >
+                    {loading ? "Logging in..." : "Login"}
+                </button>
+
+            </form>
+
+            <p className="text-center mt-6 text-zinc-400">
+                Don't have an account?{" "}
+                <Link
+                    to="/signup"
+                    className="text-red-500 hover:underline"
+                >
+                    Sign Up
+                </Link>
+            </p>
+
+        </div>
     );
 }
 

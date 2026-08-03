@@ -5,21 +5,49 @@ import apiResponse from "../utils/apiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
-    const {videoId} = req.params
-    if(!isValidObjectId(videoId)){
-        throw new apiError(400,"Invalid videoId")
+
+    const { videoId } = req.params;
+
+    if (!isValidObjectId(videoId)) {
+        throw new apiError(400, "Invalid videoId");
     }
-    const userId=req.user._id
-    const like =await Like.findOne({video:videoId,LikedBy:userId})
-    if(like){
-        await Like.findByIdAndDelete(like._id)
+
+    const userId = req.user._id;
+
+    const existingLike = await Like.findOne({
+        video: videoId,
+        LikedBy: userId,
+    });
+
+    let liked = false;
+
+    if (existingLike) {
+        await Like.findByIdAndDelete(existingLike._id);
+    } else {
+        await Like.create({
+            video: videoId,
+            LikedBy: userId,
+        });
+
+        liked = true;
     }
-    if(!like){
-        await Like.create({video:videoId,LikedBy:userId})
-    }
-    res.status(200).json(new apiResponse(200,{message:"Like toggled"}))
-    
-})
+
+    const likeCount = await Like.countDocuments({
+        video: videoId,
+    });
+
+    return res.status(200).json(
+        new apiResponse(
+            200,
+            {
+                liked,
+                likeCount,
+            },
+            "Like Updated"
+        )
+    );
+
+});
 
 
 
@@ -52,9 +80,37 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 
 })
 
+const getVideoLikeStatus = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+
+    if (!isValidObjectId(videoId)) {
+        throw new apiError(400, "Invalid videoId");
+    }
+
+    const likeCount = await Like.countDocuments({
+        video: videoId,
+    });
+
+    const liked = !!(await Like.findOne({
+        video: videoId,
+        LikedBy: req.user._id,
+    }));
+
+    return res.status(200).json(
+        new apiResponse(
+            200,
+            {
+                liked,
+                likeCount,
+            },
+            "Like status fetched"
+        )
+    );
+});
+
 export {
-    
     toggleTweetLike,
     toggleVideoLike,
-    getLikedVideos
+    getLikedVideos,
+    getVideoLikeStatus,
 }

@@ -19,7 +19,3 @@ export const logoutUser = () => {
 export const getCurrentUser = () => {
     return api.get("/users/current-user");
 };
-
-export const refreshAccessToken = () => {
-    return api.post("/users/refresh-token");
-};
