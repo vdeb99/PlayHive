@@ -19,6 +19,7 @@ import subscriptionRouter from "../src/routes/subscription.routes.js";
 import likeRouter from "../src/routes/like.routes.js";
 import commentRouter from "../src/routes/comment.routes.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
+import historyRouter from "./routes/history.routes.js";
 app.use("/api/v1/subscriptions",subscriptionRouter)
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/tweets",tweetRouter)
@@ -27,4 +28,5 @@ app.use("/api/v1/playlists",playlistRouter)
 app.use("/api/v1/likes",likeRouter)
 app.use("/api/v1/comments",commentRouter)
 app.use("/api/v1/dashboard", dashboardRouter);
+app.use("/api/v1/history", historyRouter);
 export default app;

@@ -15,6 +15,8 @@ import Upload from "../pages/Upload/Upload";
 import Watch from "../pages/Watch/Watch";
 import Search from "../pages/Search/Search";
 import PlaylistDetails from "../pages/Playlist/PlaylistDetails";
+import Subscriptions from "../pages/Subscriptions/Subscriptions";
+import Settings from "../pages/Settings/Settings";
 
 function AppRoutes() {
   return (
@@ -64,7 +66,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/subscriptions"
+          element={
+            <ProtectedRoute>
+              <Subscriptions />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={
@@ -83,6 +92,14 @@ function AppRoutes() {
           }
         />
       </Route>
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
