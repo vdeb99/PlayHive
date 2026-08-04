@@ -1,77 +1,49 @@
+import { Video, Eye, Heart, MessageCircle } from "lucide-react";
+
 function DashboardStats({ stats }) {
+  const cards = [
+    {
+      title: "Videos",
+      value: stats.totalVideos,
+      icon: <Video size={28} />,
+    },
 
-    return (
+    {
+      title: "Views",
+      value: stats.totalViews,
+      icon: <Eye size={28} />,
+    },
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {
+      title: "Likes",
+      value: stats.totalLikes,
+      icon: <Heart size={28} />,
+    },
 
-            <div className="bg-zinc-900 rounded-xl p-6">
+    {
+      title: "Comments",
+      value: stats.totalComments,
+      icon: <MessageCircle size={28} />,
+    },
+  ];
 
-                <h2 className="text-4xl font-bold">
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      {cards.map((card) => (
+        <div key={card.title} className="bg-zinc-900 rounded-xl p-6">
+          <div className="flex justify-between">
+            <div>
+              <h2 className="text-4xl font-bold">{card.value}</h2>
 
-                    {stats.totalVideos}
-
-                </h2>
-
-                <p className="text-zinc-400 mt-2">
-
-                    Videos
-
-                </p>
-
+              <p className="mt-3 text-zinc-400">{card.title}</p>
             </div>
 
-            <div className="bg-zinc-900 rounded-xl p-6">
-
-                <h2 className="text-4xl font-bold">
-
-                    {stats.totalViews}
-
-                </h2>
-
-                <p className="text-zinc-400 mt-2">
-
-                    Views
-
-                </p>
-
-            </div>
-
-            <div className="bg-zinc-900 rounded-xl p-6">
-
-                <h2 className="text-4xl font-bold">
-
-                    {stats.totalLikes}
-
-                </h2>
-
-                <p className="text-zinc-400 mt-2">
-
-                    Likes
-
-                </p>
-
-            </div>
-
-            <div className="bg-zinc-900 rounded-xl p-6">
-
-                <h2 className="text-4xl font-bold">
-
-                    {stats.totalComments}
-
-                </h2>
-
-                <p className="text-zinc-400 mt-2">
-
-                    Comments
-
-                </p>
-
-            </div>
-
+            <div className="text-red-500">{card.icon}</div>
+          </div>
         </div>
-
-    );
-
+      ))}
+    </div>
+  );
 }
 
 export default DashboardStats;

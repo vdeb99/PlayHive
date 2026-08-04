@@ -23,11 +23,16 @@ export const publishVideo = (formData) => {
 
 
 export const updateVideo = (videoId, formData) => {
-    return api.patch(`/videos/${videoId}`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+    return api.patch(
+        `/videos/${videoId}`,
+        formData,
+        {
+            headers: {
+                "Content-Type":
+                    "multipart/form-data",
+            },
+        }
+    );
 };
 
 
