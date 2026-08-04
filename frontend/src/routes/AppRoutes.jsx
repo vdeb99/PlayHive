@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 
-// Pages
 import Home from "../pages/Home/Home";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
@@ -15,93 +14,79 @@ import Playlist from "../pages/Playlist/Playlist";
 import Upload from "../pages/Upload/Upload";
 import Watch from "../pages/Watch/Watch";
 import Search from "../pages/Search/Search";
+import PlaylistDetails from "../pages/Playlist/PlaylistDetails";
 
 function AppRoutes() {
-    return (
-        <Routes>
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-            {/* Authentication */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
 
-            {/* Main Layout */}
-            <Route element={<Layout />}>
+        <Route path="/watch/:videoId" element={<Watch />} />
 
-                {/* Public Routes */}
-                <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
 
-                <Route
-                    path="/watch/:videoId"
-                    element={<Watch />}
-                />
+        <Route path="/channel/:username" element={<Channel />} />
 
-                <Route
-                    path="/search"
-                    element={<Search />}
-                />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/channel/:username"
-                    element={<Channel />}
-                />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <History />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/playlist/:playlistId"
+          element={
+            <ProtectedRoute>
+              <PlaylistDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/playlist"
+          element={
+            <ProtectedRoute>
+              <Playlist />
+            </ProtectedRoute>
+          }
+        />
 
-                {/* Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/profile"
-                    element={
-                        <ProtectedRoute>
-                            <Profile />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/upload"
+          element={
+            <ProtectedRoute>
+              <Upload />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
 
-                <Route
-                    path="/history"
-                    element={
-                        <ProtectedRoute>
-                            <History />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/playlist"
-                    element={
-                        <ProtectedRoute>
-                            <Playlist />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/upload"
-                    element={
-                        <ProtectedRoute>
-                            <Upload />
-                        </ProtectedRoute>
-                    }
-                />
-
-            </Route>
-
-            {/* 404 */}
-            <Route
-                path="*"
-                element={<Navigate to="/" replace />}
-            />
-
-        </Routes>
-    );
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
 
 export default AppRoutes;

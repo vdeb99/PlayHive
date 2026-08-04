@@ -5,7 +5,7 @@ import { getCurrentUser } from "../../services/profile.service";
 import ProfileHeader from "../../components/profile/ProfileHeader";
 import ProfileStats from "../../components/profile/ProfileStats";
 import EditProfileModal from "../../components/profile/EditProfileModal";
-import ChangePasswordModal from "../../components/profile/ChangePasswordModal";
+import ChangePasswordModal from "../../components/channel/ChangePasswordModal";
 
 function Profile() {
   const [user, setUser] = useState(null);
