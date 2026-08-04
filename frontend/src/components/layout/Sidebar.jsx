@@ -1,42 +1,94 @@
-import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import {
+  Home,
+  Users,
+  History,
+  ListVideo,
+  Upload,
+  LayoutDashboard,
+  User,
+  Settings,
+} from "lucide-react";
+
+import SidebarItem from "./SidebarItem";
 
 function Sidebar() {
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
-    const links = [
-        { name: "Home", path: "/" },
-        { name: "History", path: "/history" },
-        { name: "Playlists", path: "/playlist" },
-        { name: "Dashboard", path: "/dashboard" },
-        { name: "Upload", path: "/upload" }
-    ];
+  return (
+    <aside className="w-64 h-[calc(100vh-64px)] sticky top-16 bg-zinc-900 border-r border-zinc-800 p-4">
 
-    return (
-        <aside className="w-64 h-[calc(100vh-64px)] border-r border-zinc-800 bg-zinc-900">
+      <div className="space-y-2">
 
-            <div className="flex flex-col p-4 gap-3">
+        <SidebarItem
+          to="/"
+          icon={Home}
+          title="Home"
+        />
 
-                {links.map((link) => (
+        {isAuthenticated && (
+          <>
+            <SidebarItem
+              to="/subscriptions"
+              icon={Users}
+              title="Subscriptions"
+            />
 
-                    <NavLink
-                        key={link.path}
-                        to={link.path}
-                        className={({ isActive }) =>
-                            `rounded-lg px-4 py-3 ${
-                                isActive
-                                    ? "bg-red-600"
-                                    : "hover:bg-zinc-800"
-                            }`
-                        }
-                    >
-                        {link.name}
-                    </NavLink>
+            <SidebarItem
+              to="/history"
+              icon={History}
+              title="History"
+            />
 
-                ))}
+            <SidebarItem
+              to="/playlist"
+              icon={ListVideo}
+              title="Playlists"
+            />
 
-            </div>
+            <SidebarItem
+              to="/upload"
+              icon={Upload}
+              title="Upload"
+            />
 
-        </aside>
-    );
+            <SidebarItem
+              to="/dashboard"
+              icon={LayoutDashboard}
+              title="Dashboard"
+            />
+          </>
+        )}
+
+      </div>
+
+      {isAuthenticated && (
+        <>
+          <div className="border-t border-zinc-800 my-6"></div>
+
+          <div className="space-y-2">
+
+            <SidebarItem
+              to="/profile"
+              icon={User}
+              title="My Profile"
+            />
+
+            <SidebarItem
+              to="/settings"
+              icon={Settings}
+              title="Settings"
+            />
+
+          </div>
+        </>
+      )}
+
+    </aside>
+  );
 }
 
 export default Sidebar;

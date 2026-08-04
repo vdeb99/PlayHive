@@ -9,14 +9,30 @@ import ChangePasswordModal from "../../components/channel/ChangePasswordModal";
 
 function Profile() {
   const [user, setUser] = useState(null);
-  const [showEdit, setShowEdit] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [showEdit, setShowEdit] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+  const [stats, setStats] = useState({
+    videos: 0,
+    subscribers: 0,
+    following: 0,
+  });
 
   const refreshProfile = async () => {
     try {
       const response = await getCurrentUser();
-      setUser(response.data.data);
+
+      const data = response.data.data;
+
+      setUser(data);
+
+      setStats({
+        videos: data.videoCount || 0,
+        subscribers: data.subscriberCount || 0,
+        following: data.subscribedCount || 0,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -27,7 +43,15 @@ function Profile() {
       try {
         const response = await getCurrentUser();
 
-        setUser(response.data.data);
+        const data = response.data.data;
+
+        setUser(data);
+
+        setStats({
+          videos: data.videoCount || 0,
+          subscribers: data.subscriberCount || 0,
+          following: data.subscribedCount || 0,
+        });
       } catch (error) {
         console.error(error);
       } finally {
@@ -39,12 +63,16 @@ function Profile() {
   }, []);
 
   if (loading) {
-    return <div className="text-center mt-20">Loading Profile...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen text-xl">
+        Loading Profile...
+      </div>
+    );
   }
 
   if (!user) {
     return (
-      <div className="text-center mt-20 text-red-500">
+      <div className="flex justify-center items-center h-screen text-red-500 text-xl">
         Failed to load profile.
       </div>
     );
@@ -52,6 +80,7 @@ function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
+
       <ProfileHeader
         user={user}
         onEdit={() => setShowEdit(true)}
@@ -59,7 +88,8 @@ function Profile() {
         onChangePassword={() => setShowPasswordModal(true)}
       />
 
-      <ProfileStats user={user} />
+      <ProfileStats stats={stats} />
+
       {showEdit && (
         <EditProfileModal
           user={user}
@@ -69,8 +99,11 @@ function Profile() {
       )}
 
       {showPasswordModal && (
-        <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+        <ChangePasswordModal
+          onClose={() => setShowPasswordModal(false)}
+        />
       )}
+
     </div>
   );
 }

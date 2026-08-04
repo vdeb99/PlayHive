@@ -19,12 +19,22 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
   const matchStage = {
     isPublished: true,
-};
+  };
 
   if (query) {
     matchStage.$or = [
-      { title: { $regex: query, $options: "i" } },
-      { description: { $regex: query, $options: "i" } },
+      {
+        title: {
+          $regex: query,
+          $options: "i",
+        },
+      },
+      {
+        description: {
+          $regex: query,
+          $options: "i",
+        },
+      },
     ];
   }
 
@@ -35,45 +45,73 @@ const getAllVideos = asyncHandler(async (req, res) => {
   const sortStage = {};
   sortStage[sortBy] = sortType === "asc" ? 1 : -1;
 
-  const videosPipeline = [
-    { $match: matchStage },
-    { $sort: sortStage },
-    { $skip: (page - 1) * limit },
-    { $limit: parseInt(limit) },
+  const videos = await Video.aggregate([
+    {
+      $match: matchStage,
+    },
+
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+      },
+    },
+
+    {
+      $unwind: "$owner",
+    },
+
     {
       $project: {
-        _id: 1,
         title: 1,
         description: 1,
         thumbnail: 1,
         videoFile: 1,
         duration: 1,
-        isPublished: 1,
         createdAt: 1,
         updatedAt: 1,
+        views: 1,
+        isPublished: 1,
+
+        owner: {
+          _id: "$owner._id",
+          username: "$owner.username",
+          fullName: "$owner.fullName",
+          avatar: "$owner.avatar",
+        },
       },
     },
-  ];
 
-  const videos = await Video.aggregate(videosPipeline);
+    {
+      $sort: sortStage,
+    },
+
+    {
+      $skip: (page - 1) * Number(limit),
+    },
+
+    {
+      $limit: Number(limit),
+    },
+  ]);
 
   const totalVideos = await Video.countDocuments(matchStage);
 
-  const currentPage = Number(page);
-  const currentLimit = Number(limit);
-
-  res.status(200).json(
+  return res.status(200).json(
     new apiResponse(
       200,
       {
         videos,
         totalVideos,
-        page: currentPage,
-        limit: currentLimit,
-        hasMore: currentPage * currentLimit < totalVideos,
+        page: Number(page),
+        limit: Number(limit),
+        hasMore:
+          Number(page) * Number(limit) < totalVideos,
       },
-      "Videos fetched successfully",
-    ),
+      "Videos fetched successfully"
+    )
   );
 });
 
@@ -126,7 +164,11 @@ const getVideoById = asyncHandler(async (req, res) => {
     throw new apiError(400, "Invalid videoId");
   }
 
-  const video = await Video.findById(videoId);
+  const video = await Video.findById(videoId)
+    .populate(
+      "owner",
+      "fullName username avatar coverImage email"
+    );
 
   if (!video) {
     throw new apiError(404, "Video not found");
@@ -155,8 +197,8 @@ const getVideoById = asyncHandler(async (req, res) => {
         likeCount,
         isLiked,
       },
-      "Video fetched successfully",
-    ),
+      "Video fetched successfully"
+    )
   );
 });
 

@@ -3,25 +3,19 @@ import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 
 function Layout() {
-    return (
-        <div className="min-h-screen bg-zinc-950 text-white">
+  return (
+    <div className="min-h-screen bg-zinc-950 text-white">
+      <Navbar />
 
-            <Navbar />
+      <div className="flex">
+        <Sidebar />
 
-            <div className="flex">
-
-                <Sidebar />
-
-                <main className="flex-1 p-6">
-
-                    <Outlet />
-
-                </main>
-
-            </div>
-
-        </div>
-    );
+        <main className="flex-1 bg-zinc-950 min-h-[calc(100vh-64px)]">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 }
 
 export default Layout;

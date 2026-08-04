@@ -21,10 +21,13 @@ import Settings from "../pages/Settings/Settings";
 function AppRoutes() {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
+      {/* Routes with Navbar + Sidebar */}
       <Route element={<Layout />}>
+
         <Route path="/" element={<Home />} />
 
         <Route path="/watch/:videoId" element={<Watch />} />
@@ -50,14 +53,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/playlist/:playlistId"
-          element={
-            <ProtectedRoute>
-              <PlaylistDetails />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="/playlist"
           element={
@@ -66,6 +62,16 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/playlist/:playlistId"
+          element={
+            <ProtectedRoute>
+              <PlaylistDetails />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/subscriptions"
           element={
@@ -74,6 +80,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/dashboard"
           element={
@@ -91,16 +98,19 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-      </Route>
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <Settings />
-          </ProtectedRoute>
-        }
-      />
 
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+      </Route>
+
+      
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

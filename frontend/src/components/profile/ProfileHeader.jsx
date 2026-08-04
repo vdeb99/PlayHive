@@ -52,7 +52,7 @@ function ProfileHeader({ user, onEdit, onRefresh, onChangePassword, }) {
 
   return (
     <div>
-      {/* Cover Image */}
+      
       <div className="relative h-72 rounded-2xl overflow-hidden bg-zinc-800">
         <img
           src={
@@ -68,7 +68,7 @@ function ProfileHeader({ user, onEdit, onRefresh, onChangePassword, }) {
         </div>
       </div>
 
-      {/* Profile */}
+      
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mt-8">
         <div className="flex flex-col items-center">
           <img
@@ -96,12 +96,7 @@ function ProfileHeader({ user, onEdit, onRefresh, onChangePassword, }) {
             Edit Profile
           </button>
           <div className="flex gap-4 mt-6">
-            <button
-              onClick={onEdit}
-              className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg transition"
-            >
-              Edit Profile
-            </button>
+            
 
             <button
               onClick={onChangePassword}

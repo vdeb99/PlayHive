@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 import { updateProfile } from "../../services/profile.service";
@@ -9,8 +9,15 @@ function EditProfileModal({
     onSuccess,
 }) {
 
-    const [fullName, setFullName] = useState(user.fullName);
-    const [email, setEmail] = useState(user.email);
+    const [fullName, setFullName] = useState("");
+const [email, setEmail] = useState("");
+
+useEffect(() => {
+    if (user) {
+        setFullName(user.fullName || "");
+        setEmail(user.email || "");
+    }
+}, [user]);
 
     const [loading, setLoading] = useState(false);
 
