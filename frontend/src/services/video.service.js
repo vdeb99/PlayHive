@@ -2,9 +2,9 @@ import api from "./api";
 
 
 export const getAllVideos = (params = {}) => {
-    return api.get("/videos", {
-        params,
-    });
+  return api.get("/videos", {
+    params,
+  });
 };
 
 
