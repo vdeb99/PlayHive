@@ -44,3 +44,7 @@ export const deleteVideo = (videoId) => {
 export const togglePublishStatus = (videoId) => {
     return api.patch(`/videos/toggle/publish/${videoId}`);
 };
+
+export const incrementVideoView = (videoId) => {
+  return api.post(`/videos/${videoId}/view`);
+};

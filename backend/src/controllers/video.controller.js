@@ -107,11 +107,10 @@ const getAllVideos = asyncHandler(async (req, res) => {
         totalVideos,
         page: Number(page),
         limit: Number(limit),
-        hasMore:
-          Number(page) * Number(limit) < totalVideos,
+        hasMore: Number(page) * Number(limit) < totalVideos,
       },
-      "Videos fetched successfully"
-    )
+      "Videos fetched successfully",
+    ),
   );
 });
 
@@ -164,11 +163,10 @@ const getVideoById = asyncHandler(async (req, res) => {
     throw new apiError(400, "Invalid videoId");
   }
 
-  const video = await Video.findById(videoId)
-    .populate(
-      "owner",
-      "fullName username avatar coverImage email"
-    );
+  const video = await Video.findById(videoId).populate(
+    "owner",
+    "fullName username avatar coverImage email"
+  );
 
   if (!video) {
     throw new apiError(404, "Video not found");
@@ -281,6 +279,58 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   res.status(200).json(new apiResponse(200, { videoUpdated }));
 });
 
+const incrementVideoView = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!isValidObjectId(videoId)) {
+    throw new apiError(400, "Invalid videoId");
+  }
+
+  const video = await Video.findById(videoId);
+
+  if (!video) {
+    throw new apiError(404, "Video not found");
+  }
+
+  
+  if (
+    req.user &&
+    video.owner.toString() === req.user._id.toString()
+  ) {
+    return res.status(200).json(
+      new apiResponse(
+        200,
+        {
+          views: video.views,
+        },
+        "Owner view not counted"
+      )
+    );
+  }
+
+  const updatedVideo = await Video.findByIdAndUpdate(
+    videoId,
+    {
+      $inc: {
+        views: 1,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  return res.status(200).json(
+    new apiResponse(
+      200,
+      {
+        views: updatedVideo.views,
+      },
+      "View recorded successfully"
+    )
+  );
+});
+
 export {
   getAllVideos,
   publishAVideo,
@@ -288,4 +338,5 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  incrementVideoView,
 };

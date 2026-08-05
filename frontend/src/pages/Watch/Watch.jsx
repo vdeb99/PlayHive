@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -11,19 +11,14 @@ import CommentList from "../../components/comments/CommentList";
 
 import RelatedVideos from "../../components/video/RelatedVideos";
 
-import { getVideoById } from "../../services/video.service";
 import { addToHistory } from "../../services/history.service";
-import {
-  getComments,
-  addComment,
-} from "../../services/comment.service";
+import { getComments, addComment } from "../../services/comment.service";
+import { getVideoById, incrementVideoView } from "../../services/video.service";
 
 function Watch() {
   const { videoId } = useParams();
 
-  const { isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
@@ -31,6 +26,8 @@ function Watch() {
   const [loading, setLoading] = useState(true);
   const [commentLoading, setCommentLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const hasViewed = useRef(false);
 
   const fetchVideo = async () => {
     try {
@@ -44,18 +41,9 @@ function Watch() {
         isLiked: data.isLiked || false,
       });
 
-      
-      if (isAuthenticated) {
-        try {
-          await addToHistory(videoId);
-        } catch (historyError) {
-          console.log(
-            "History Error:",
-            historyError.response?.data?.message ||
-              historyError.message
-          );
-        }
-      }
+      await incrementVideoView(videoId);
+
+      await addToHistory(videoId);
     } catch (error) {
       console.error(error);
       setError("Failed to load video.");
@@ -87,13 +75,17 @@ function Watch() {
   };
 
   useEffect(() => {
+    hasViewed.current = false;
+
     const loadData = async () => {
       setLoading(true);
 
-      await Promise.all([
-        fetchVideo(),
-        fetchComments(),
-      ]);
+      if (!hasViewed.current) {
+        hasViewed.current = true;
+        await fetchVideo();
+      }
+
+      await fetchComments();
 
       setLoading(false);
     };
@@ -104,9 +96,7 @@ function Watch() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <h1 className="text-2xl text-white">
-          Loading...
-        </h1>
+        <h1 className="text-2xl text-white">Loading...</h1>
       </div>
     );
   }
@@ -114,9 +104,7 @@ function Watch() {
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <h1 className="text-red-500 text-2xl">
-          {error}
-        </h1>
+        <h1 className="text-red-500 text-2xl">{error}</h1>
       </div>
     );
   }
@@ -124,21 +112,15 @@ function Watch() {
   if (!video) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <h1 className="text-red-500 text-2xl">
-          Video Not Found
-        </h1>
+        <h1 className="text-red-500 text-2xl">Video Not Found</h1>
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-6">
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        
         <div className="lg:col-span-2">
-
           <VideoPlayer video={video} />
 
           <div className="mt-5">
@@ -150,15 +132,11 @@ function Watch() {
           </div>
 
           <div className="mt-10">
-
             <h2 className="text-2xl font-bold text-white mb-6">
               Comments ({comments.length})
             </h2>
 
-            <CommentForm
-              onSubmit={handleComment}
-              loading={commentLoading}
-            />
+            <CommentForm onSubmit={handleComment} loading={commentLoading} />
 
             <div className="mt-8">
               <CommentList
@@ -166,20 +144,13 @@ function Watch() {
                 refreshComments={fetchComments}
               />
             </div>
-
           </div>
-
         </div>
 
-        
         <div>
-          <RelatedVideos
-            currentVideoId={video._id}
-          />
+          <RelatedVideos currentVideoId={video._id} />
         </div>
-
       </div>
-
     </div>
   );
 }

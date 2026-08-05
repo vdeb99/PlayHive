@@ -6,6 +6,7 @@ import {
     publishAVideo,
     togglePublishStatus,
     updateVideo,
+    incrementVideoView,
 } from "../controllers/video.controller.js";
 
 import { verifyJwt } from "../middlewares/auth.middleware.js";
@@ -44,6 +45,11 @@ router.route("/:videoId")
         verifyJwt,
         upload.single("thumbnail"),
         updateVideo
+    );
+
+router.route("/:videoId/view")
+    .post(
+        verifyJwt, incrementVideoView
     );
 
 
