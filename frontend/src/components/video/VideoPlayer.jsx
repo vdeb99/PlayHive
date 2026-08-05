@@ -1,24 +1,13 @@
 function VideoPlayer({ video }) {
-    if (!video) return null;
+  if (!video) return null;
 
-    return (
-        <div className="w-full bg-black rounded-xl overflow-hidden">
-
-            <video
-                controls
-                className="w-full"
-                poster={video.thumbnail}
-            >
-                <source
-                    src={video.videoFile}
-                    type="video/mp4"
-                />
-
-                Your browser does not support HTML5 video.
-            </video>
-
-        </div>
-    );
+  return (
+    <div className="w-full aspect-video rounded-xl overflow-hidden bg-black">
+      <video controls className="w-full h-full object-cover">
+        <source src={video.videoFile} type="video/mp4" />
+      </video>
+    </div>
+  );
 }
 
 export default VideoPlayer;

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Thumbnail from "../common/Thumbnail";
 
 function VideoCard({ video }) {
   const navigate = useNavigate();
@@ -8,11 +9,7 @@ function VideoCard({ video }) {
       className="cursor-pointer"
       onClick={() => navigate(`/watch/${video._id}`)}
     >
-      <img
-        src={video.thumbnail}
-        alt={video.title}
-        className="w-full aspect-video rounded-xl object-cover"
-      />
+      <Thumbnail src={video.thumbnail} alt={video.title} />
 
       <div className="flex gap-3 mt-3">
         <img
@@ -26,7 +23,6 @@ function VideoCard({ video }) {
         />
 
         <div className="flex-1">
-
           <h3 className="font-semibold text-white line-clamp-2">
             {video.title}
           </h3>
@@ -45,7 +41,6 @@ function VideoCard({ video }) {
             {video.views} views •{" "}
             {new Date(video.createdAt).toLocaleDateString()}
           </p>
-
         </div>
       </div>
     </div>

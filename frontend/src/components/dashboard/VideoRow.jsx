@@ -3,6 +3,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { togglePublish } from "../../services/dashboard.service";
+import Thumbnail from "../common/Thumbnail";
 
 import EditVideoModal from "./EditVideoModal";
 import DeleteVideoModal from "./DeleteVideoModal";
@@ -34,10 +35,10 @@ function VideoRow({ video, refresh }) {
 
                 <td className="p-4">
                     <img
-                        src={video.thumbnail}
-                        alt={video.title}
-                        className="w-40 h-24 rounded-lg object-cover"
-                    />
+    src={video.thumbnail}
+    alt={video.title}
+    className="w-40 rounded-lg"
+/>
                 </td>
 
                 <td className="font-medium">
