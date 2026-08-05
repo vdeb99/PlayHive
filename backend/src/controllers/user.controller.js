@@ -9,6 +9,15 @@ import mongoose from "mongoose";
 import { Video } from "../models/video.model.js";
 import { Subscription } from "../models/subscription.model.js";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite:
+    process.env.NODE_ENV === "production"
+      ? "none"
+      : "lax",
+};
+
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -92,26 +101,10 @@ const loginUser = asyncHandler(async (req, res) => {
   const userLoggedIn = await User.findById(user._id).select(
     "-password -refreshToken",
   );
-  const option = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-};
   return res
-    .status(200)
-    .cookie("accessToken", accessToken, option)
-    .cookie("refreshToken", refreshToken, option)
-    .json(
-      new apiResponse(
-        200,
-        {
-          user: userLoggedIn,
-          accessToken,
-          refreshToken,
-        },
-        "User logged in successfully",
-      ),
-    );
+  .status(200)
+  .cookie("accessToken", accessToken, cookieOptions)
+  .cookie("refreshToken", refreshToken, cookieOptions)
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -120,62 +113,58 @@ const logoutUser = asyncHandler(async (req, res) => {
     { $set: { refreshToken: null } },
     { new: true },
   );
-  const option = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-};
   return res
-    .status(200)
-    .clearCookie("accessToken", option)
-    .clearCookie("refreshToken", option)
-    .json(new apiResponse(200, {}, "User logged out successfully"));
+  .status(200)
+  .clearCookie("accessToken", cookieOptions)
+  .clearCookie("refreshToken", cookieOptions)
 });
 
 const refreshToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
+
   if (!incomingRefreshToken) {
     throw new apiError(400, "Refresh token is required");
   }
+
   try {
     const decodedToken = jwt.verify(
       incomingRefreshToken,
-      process.env.REFRESH_TOKEN_SECRET,
+      process.env.REFRESH_TOKEN_SECRET
     );
+
     const user = await User.findById(decodedToken?._id);
+
     if (!user) {
       throw new apiError(400, "Invalid refresh token");
     }
-    if (user?.refreshToken !== incomingRefreshToken) {
-      throw new apiError(400, "Expired refresh token");
-    }
-    const option = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-};
-    const {
-    accessToken,
-    refreshToken,
-} = await generateAccessAndRefreshToken(user._id);
 
-return res
-    .status(200)
-    .cookie("accessToken", accessToken, option)
-    .cookie("refreshToken", refreshToken, option)
-    .json(
+    if (user.refreshToken !== incomingRefreshToken) {
+      throw new apiError(400, "Refresh token has expired or is invalid");
+    }
+
+    const { accessToken, refreshToken } =
+      await generateAccessAndRefreshToken(user._id);
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .cookie("refreshToken", refreshToken, cookieOptions)
+      .json(
         new apiResponse(
-            200,
-            {
-                accessToken,
-                refreshToken,
-            },
-            "Token refreshed successfully"
+          200,
+          {
+            accessToken,
+            refreshToken,
+          },
+          "Access token refreshed successfully"
         )
-    );
+      );
   } catch (error) {
-    throw new apiError(400, error?.message || "Invalid refresh token");
+    throw new apiError(
+      401,
+      error?.message || "Invalid refresh token"
+    );
   }
 });
 const changeCurrentPassword = asyncHandler(async (req, res) => {
