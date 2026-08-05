@@ -113,7 +113,7 @@ function Home() {
 
       {!hasMore && videos.length > 0 && (
         <div className="text-center text-zinc-500 py-10">
-          🎉 You've reached the end.
+          You've reached the end.
         </div>
       )}
     </div>

@@ -72,6 +72,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(200)
     .json(new apiResponse(200, userCreated, "User created successfully"));
 });
+
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
   if (!username && !email) {

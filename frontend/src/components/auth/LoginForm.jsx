@@ -11,7 +11,7 @@ function LoginForm() {
     const dispatch = useDispatch();
 
     const [formData, setFormData] = useState({
-        email: "",
+        login: "",
         password: "",
     });
 
@@ -27,7 +27,7 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.email || !formData.password) {
+        if (!formData.login || !formData.password) {
             toast.error("Please fill all fields.");
             return;
         }
@@ -35,16 +35,17 @@ function LoginForm() {
         try {
             setLoading(true);
 
-            const response = await loginUser(formData);
-
-            console.log(response.data);
+            const response = await loginUser({
+                username: formData.login,
+                email: formData.login,
+                password: formData.password,
+            });
 
             dispatch(loginSuccess(response.data.data.user));
 
             toast.success("Login Successful!");
 
             navigate("/");
-
         } catch (error) {
             console.error(error);
 
@@ -71,9 +72,9 @@ function LoginForm() {
 
                 <input
                     type="text"
-                    name="email"
+                    name="login"
                     placeholder="Email or Username"
-                    value={formData.email}
+                    value={formData.login}
                     onChange={handleChange}
                     className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
                 />

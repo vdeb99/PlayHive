@@ -1,6 +1,7 @@
 import api from "./api";
 
 export const loginUser = (data) => {
+    
     return api.post("/users/login", data);
 };
 
