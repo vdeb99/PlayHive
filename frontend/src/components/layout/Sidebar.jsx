@@ -14,20 +14,12 @@ import {
 import SidebarItem from "./SidebarItem";
 
 function Sidebar() {
-  const { isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
     <aside className="w-64 h-[calc(100vh-64px)] sticky top-16 bg-zinc-900 border-r border-zinc-800 p-4">
-
       <div className="space-y-2">
-
-        <SidebarItem
-          to="/"
-          icon={Home}
-          title="Home"
-        />
+        <SidebarItem to="/" icon={Home} title="Home" />
 
         {isAuthenticated && (
           <>
@@ -37,23 +29,11 @@ function Sidebar() {
               title="Subscriptions"
             />
 
-            <SidebarItem
-              to="/history"
-              icon={History}
-              title="History"
-            />
+            <SidebarItem to="/history" icon={History} title="History" />
 
-            <SidebarItem
-              to="/playlist"
-              icon={ListVideo}
-              title="Playlists"
-            />
+            <SidebarItem to="/playlist" icon={ListVideo} title="Playlists" />
 
-            <SidebarItem
-              to="/upload"
-              icon={Upload}
-              title="Upload"
-            />
+            <SidebarItem to="/upload" icon={Upload} title="Upload" />
 
             <SidebarItem
               to="/dashboard"
@@ -62,7 +42,6 @@ function Sidebar() {
             />
           </>
         )}
-
       </div>
 
       {isAuthenticated && (
@@ -70,23 +49,12 @@ function Sidebar() {
           <div className="border-t border-zinc-800 my-6"></div>
 
           <div className="space-y-2">
+            <SidebarItem to="/profile" icon={User} title="My Profile" />
 
-            <SidebarItem
-              to="/profile"
-              icon={User}
-              title="My Profile"
-            />
-
-            <SidebarItem
-              to="/settings"
-              icon={Settings}
-              title="Settings"
-            />
-
+            <SidebarItem to="/settings" icon={Settings} title="Settings" />
           </div>
         </>
       )}
-
     </aside>
   );
 }

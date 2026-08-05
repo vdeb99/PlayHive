@@ -27,25 +27,14 @@ function Subscriptions() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="text-center mt-20 text-white">
-        Loading...
-      </div>
-    );
+    return <div className="text-center mt-20 text-white">Loading...</div>;
   }
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
+      <h1 className="text-4xl font-bold mb-10">Subscriptions</h1>
 
-      <h1 className="text-4xl font-bold mb-10">
-        Subscriptions
-      </h1>
-
-      <SubscriptionList
-        channels={channels}
-        refresh={loadSubscriptions}
-      />
-
+      <SubscriptionList channels={channels} refresh={loadSubscriptions} />
     </div>
   );
 }

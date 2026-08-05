@@ -1,9 +1,4 @@
-function Thumbnail({
-  src,
-  alt,
-  className = "",
-  onClick,
-}) {
+function Thumbnail({ src, alt, className = "", onClick }) {
   return (
     <div
       onClick={onClick}

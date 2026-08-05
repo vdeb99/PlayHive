@@ -25,9 +25,7 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -53,24 +51,11 @@ function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 h-16 bg-zinc-900 border-b border-zinc-800 px-6 flex items-center justify-between">
-
-      
-
-      <div
-        onClick={() => navigate("/")}
-        className="cursor-pointer"
-      >
-        <h1 className="text-3xl font-bold text-red-600">
-          PlayHive
-        </h1>
+      <div onClick={() => navigate("/")} className="cursor-pointer">
+        <h1 className="text-3xl font-bold text-red-600">PlayHive</h1>
       </div>
 
-      
-
-      <form
-        onSubmit={handleSearch}
-        className="flex-1 max-w-xl mx-10"
-      >
+      <form onSubmit={handleSearch} className="flex-1 max-w-xl mx-10">
         <input
           type="text"
           placeholder="Search videos..."
@@ -82,9 +67,6 @@ function Navbar() {
 
       {isAuthenticated ? (
         <div className="flex items-center gap-4">
-
-          
-
           <button
             onClick={() => navigate("/upload")}
             className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition flex items-center gap-2"
@@ -96,51 +78,28 @@ function Navbar() {
           {/* Dropdown */}
 
           <Menu as="div" className="relative">
-
             <Menu.Button className="flex items-center gap-3 outline-none">
-
               <img
-                src={
-                  user?.avatar ||
-                  "https://placehold.co/40x40?text=U"
-                }
+                src={user?.avatar || "https://placehold.co/40x40?text=U"}
                 alt="Avatar"
                 className="w-11 h-11 rounded-full object-cover border-2 border-zinc-700 hover:border-red-600 transition"
               />
 
-              <ChevronDown
-                size={18}
-                className="text-zinc-400"
-              />
-
+              <ChevronDown size={18} className="text-zinc-400" />
             </Menu.Button>
 
             <Menu.Items className="absolute right-0 mt-3 w-72 rounded-xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden z-50 focus:outline-none">
-
-              
-
               <div className="px-5 py-5 border-b border-zinc-800">
-
                 <img
-                  src={
-                    user?.avatar ||
-                    "https://placehold.co/60x60?text=U"
-                  }
+                  src={user?.avatar || "https://placehold.co/60x60?text=U"}
                   alt=""
                   className="w-16 h-16 rounded-full object-cover mb-3"
                 />
 
-                <h2 className="font-bold text-lg">
-                  {user?.fullName}
-                </h2>
+                <h2 className="font-bold text-lg">{user?.fullName}</h2>
 
-                <p className="text-zinc-400">
-                  @{user?.username}
-                </p>
-
+                <p className="text-zinc-400">@{user?.username}</p>
               </div>
-
-              
 
               <Menu.Item>
                 {() => (
@@ -154,14 +113,10 @@ function Navbar() {
                 )}
               </Menu.Item>
 
-              
-
               <Menu.Item>
                 {() => (
                   <button
-                    onClick={() =>
-                      navigate(`/channel/${user.username}`)
-                    }
+                    onClick={() => navigate(`/channel/${user.username}`)}
                     className="w-full flex items-center gap-3 px-5 py-3 hover:bg-zinc-800"
                   >
                     <Tv size={18} />
@@ -170,14 +125,10 @@ function Navbar() {
                 )}
               </Menu.Item>
 
-              
-
               <Menu.Item>
                 {() => (
                   <button
-                    onClick={() =>
-                      navigate("/dashboard")
-                    }
+                    onClick={() => navigate("/dashboard")}
                     className="w-full flex items-center gap-3 px-5 py-3 hover:bg-zinc-800"
                   >
                     <LayoutDashboard size={18} />
@@ -186,14 +137,10 @@ function Navbar() {
                 )}
               </Menu.Item>
 
-              
-
               <Menu.Item>
                 {() => (
                   <button
-                    onClick={() =>
-                      navigate("/playlist")
-                    }
+                    onClick={() => navigate("/playlist")}
                     className="w-full flex items-center gap-3 px-5 py-3 hover:bg-zinc-800"
                   >
                     <ListVideo size={18} />
@@ -202,14 +149,10 @@ function Navbar() {
                 )}
               </Menu.Item>
 
-              
-
               <Menu.Item>
                 {() => (
                   <button
-                    onClick={() =>
-                      navigate("/history")
-                    }
+                    onClick={() => navigate("/history")}
                     className="w-full flex items-center gap-3 px-5 py-3 hover:bg-zinc-800"
                   >
                     <History size={18} />
@@ -218,14 +161,10 @@ function Navbar() {
                 )}
               </Menu.Item>
 
-              
-
               <Menu.Item>
                 {() => (
                   <button
-                    onClick={() =>
-                      navigate("/subscriptions")
-                    }
+                    onClick={() => navigate("/subscriptions")}
                     className="w-full flex items-center gap-3 px-5 py-3 hover:bg-zinc-800"
                   >
                     <Users size={18} />
@@ -234,14 +173,10 @@ function Navbar() {
                 )}
               </Menu.Item>
 
-              
-
               <Menu.Item>
                 {() => (
                   <button
-                    onClick={() =>
-                      navigate("/settings")
-                    }
+                    onClick={() => navigate("/settings")}
                     className="w-full flex items-center gap-3 px-5 py-3 hover:bg-zinc-800"
                   >
                     <Settings size={18} />
@@ -251,7 +186,6 @@ function Navbar() {
               </Menu.Item>
 
               <div className="border-t border-zinc-800">
-
                 <Menu.Item>
                   {() => (
                     <button
@@ -263,17 +197,12 @@ function Navbar() {
                     </button>
                   )}
                 </Menu.Item>
-
               </div>
-
             </Menu.Items>
-
           </Menu>
-
         </div>
       ) : (
         <div className="flex gap-3">
-
           <button
             onClick={() => navigate("/login")}
             className="bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-lg transition"
@@ -287,10 +216,8 @@ function Navbar() {
           >
             Sign Up
           </button>
-
         </div>
       )}
-
     </nav>
   );
 }

@@ -9,25 +9,21 @@ import App from "./App";
 import { store } from "./redux/store";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    
-        <Provider store={store}>
-            <BrowserRouter>
+  <Provider store={store}>
+    <BrowserRouter>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#18181b",
+            color: "#fff",
+          },
+        }}
+      />
 
-                <Toaster
-                    position="top-right"
-                    reverseOrder={false}
-                    toastOptions={{
-                        duration: 3000,
-                        style: {
-                            background: "#18181b",
-                            color: "#fff",
-                        },
-                    }}
-                />
-
-                <App />
-
-            </BrowserRouter>
-        </Provider>
-    
+      <App />
+    </BrowserRouter>
+  </Provider>,
 );

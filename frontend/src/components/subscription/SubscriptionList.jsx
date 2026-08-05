@@ -1,9 +1,6 @@
 import SubscriptionCard from "./SubscriptionCard";
 
-function SubscriptionList({
-  channels,
-  refresh,
-}) {
+function SubscriptionList({ channels, refresh }) {
   if (channels.length === 0) {
     return (
       <div className="text-center text-zinc-500 mt-20">
@@ -14,7 +11,6 @@ function SubscriptionList({
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
-
       {channels.map((channel) => (
         <SubscriptionCard
           key={channel._id}
@@ -22,7 +18,6 @@ function SubscriptionList({
           refresh={refresh}
         />
       ))}
-
     </div>
   );
 }

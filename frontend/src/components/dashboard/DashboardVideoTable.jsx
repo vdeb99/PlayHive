@@ -1,58 +1,33 @@
 import VideoRow from "./VideoRow";
 
-function DashboardVideoTable({
-    videos,
-    refresh,
-}) {
+function DashboardVideoTable({ videos, refresh }) {
+  return (
+    <div className="bg-zinc-900 rounded-xl overflow-hidden">
+      <table className="w-full">
+        <thead className="bg-zinc-800">
+          <tr>
+            <th className="p-4">Thumbnail</th>
 
-    return (
+            <th>Title</th>
 
-        <div className="bg-zinc-900 rounded-xl overflow-hidden">
+            <th>Views</th>
 
-            <table className="w-full">
+            <th>Status</th>
 
-                <thead className="bg-zinc-800">
+            <th>Created</th>
 
-                    <tr>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-                        <th className="p-4">
-                            Thumbnail
-                        </th>
-
-                        <th>Title</th>
-
-                        <th>Views</th>
-
-                        <th>Status</th>
-
-                        <th>Created</th>
-
-                        <th>Actions</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {videos.map((video) => (
-
-                        <VideoRow
-                            key={video._id}
-                            video={video}
-                            refresh={refresh}
-                        />
-
-                    ))}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    );
-
+        <tbody>
+          {videos.map((video) => (
+            <VideoRow key={video._id} video={video} refresh={refresh} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default DashboardVideoTable;

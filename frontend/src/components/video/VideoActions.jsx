@@ -13,9 +13,7 @@ import {
 function VideoActions({ video }) {
   const navigate = useNavigate();
 
-  const { isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
@@ -56,18 +54,11 @@ function VideoActions({ video }) {
       setLiked(response.data.data.liked);
       setLikes(response.data.data.likeCount);
 
-      toast.success(
-        response.data.data.liked
-          ? "Video liked"
-          : "Like removed"
-      );
+      toast.success(response.data.data.liked ? "Video liked" : "Like removed");
     } catch (error) {
       console.error(error);
 
-      toast.error(
-        error.response?.data?.message ||
-          "Unable to like video."
-      );
+      toast.error(error.response?.data?.message || "Unable to like video.");
     } finally {
       setLoading(false);
     }
@@ -92,9 +83,7 @@ function VideoActions({ video }) {
           url: window.location.href,
         });
       } else {
-        await navigator.clipboard.writeText(
-          window.location.href
-        );
+        await navigator.clipboard.writeText(window.location.href);
 
         toast.success("Video link copied!");
       }
@@ -106,7 +95,6 @@ function VideoActions({ video }) {
   return (
     <>
       <div className="flex flex-wrap items-center gap-4 mt-6">
-
         <button
           onClick={handleLike}
           disabled={loading}
@@ -116,11 +104,7 @@ function VideoActions({ video }) {
               : "bg-zinc-800 hover:bg-zinc-700"
           }`}
         >
-          {loading
-            ? "Loading..."
-            : liked
-            ? `❤️ ${likes}`
-            : `🤍 ${likes}`}
+          {loading ? "Loading..." : liked ? `❤️ ${likes}` : `🤍 ${likes}`}
         </button>
 
         <button
@@ -136,7 +120,6 @@ function VideoActions({ video }) {
         >
           🔗 Share
         </button>
-
       </div>
 
       {showPlaylist && (

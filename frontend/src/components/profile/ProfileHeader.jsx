@@ -3,7 +3,7 @@ import ImageUploader from "./ImageUploader";
 
 import { updateAvatar, updateCoverImage } from "../../services/profile.service";
 
-function ProfileHeader({ user, onEdit, onRefresh, onChangePassword, }) {
+function ProfileHeader({ user, onEdit, onRefresh, onChangePassword }) {
   const uploadAvatar = async (e) => {
     const file = e.target.files[0];
 
@@ -52,7 +52,6 @@ function ProfileHeader({ user, onEdit, onRefresh, onChangePassword, }) {
 
   return (
     <div>
-      
       <div className="relative h-72 rounded-2xl overflow-hidden bg-zinc-800">
         <img
           src={
@@ -68,7 +67,6 @@ function ProfileHeader({ user, onEdit, onRefresh, onChangePassword, }) {
         </div>
       </div>
 
-      
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mt-8">
         <div className="flex flex-col items-center">
           <img
@@ -96,8 +94,6 @@ function ProfileHeader({ user, onEdit, onRefresh, onChangePassword, }) {
             Edit Profile
           </button>
           <div className="flex gap-4 mt-6">
-            
-
             <button
               onClick={onChangePassword}
               className="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-lg transition"

@@ -47,18 +47,13 @@ function VideoInfo({ video }) {
         setSubscriberCount((prev) => prev + 1);
         toast.success("Subscribed");
       } else {
-        setSubscriberCount((prev) =>
-          Math.max(prev - 1, 0)
-        );
+        setSubscriberCount((prev) => Math.max(prev - 1, 0));
         toast.success("Unsubscribed");
       }
     } catch (error) {
       console.error(error);
 
-      toast.error(
-        error.response?.data?.message ||
-          "Unable to subscribe"
-      );
+      toast.error(error.response?.data?.message || "Unable to subscribe");
     } finally {
       setLoading(false);
     }
@@ -68,27 +63,17 @@ function VideoInfo({ video }) {
 
   return (
     <div className="mt-5">
-
-      <h1 className="text-3xl font-bold text-white">
-        {video.title}
-      </h1>
+      <h1 className="text-3xl font-bold text-white">{video.title}</h1>
 
       <div className="text-zinc-400 mt-2">
         {video.views} views •{" "}
-        {video.createdAt
-          ? new Date(video.createdAt).toLocaleDateString()
-          : ""}
+        {video.createdAt ? new Date(video.createdAt).toLocaleDateString() : ""}
       </div>
 
-      
-
       <div className="flex justify-between items-center mt-8 border-b border-zinc-800 pb-6">
-
         <div
           className="flex items-center gap-4 cursor-pointer"
-          onClick={() =>
-            navigate(`/channel/${video.owner.username}`)
-          }
+          onClick={() => navigate(`/channel/${video.owner.username}`)}
         >
           <img
             src={video.owner.avatar || "/default-avatar.png"}
@@ -97,21 +82,13 @@ function VideoInfo({ video }) {
           />
 
           <div>
-
-            <h2 className="text-lg font-semibold">
-              {video.owner.fullName}
-            </h2>
+            <h2 className="text-lg font-semibold">{video.owner.fullName}</h2>
 
             <div className="flex items-center gap-2 text-zinc-400 text-sm">
-
               <Users size={16} />
-
               {subscriberCount} Subscribers
-
             </div>
-
           </div>
-
         </div>
 
         <button
@@ -123,29 +100,15 @@ function VideoInfo({ video }) {
               : "bg-red-600 hover:bg-red-700"
           }`}
         >
-          {loading
-            ? "..."
-            : subscribed
-            ? "Subscribed"
-            : "Subscribe"}
+          {loading ? "..." : subscribed ? "Subscribed" : "Subscribe"}
         </button>
-
       </div>
-
-      
 
       <div className="bg-zinc-900 rounded-xl p-5 mt-6">
+        <h2 className="font-semibold mb-3">Description</h2>
 
-        <h2 className="font-semibold mb-3">
-          Description
-        </h2>
-
-        <p className="text-zinc-300 whitespace-pre-line">
-          {video.description}
-        </p>
-
+        <p className="text-zinc-300 whitespace-pre-line">{video.description}</p>
       </div>
-
     </div>
   );
 }

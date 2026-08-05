@@ -3,10 +3,7 @@ import toast from "react-hot-toast";
 
 import { toggleSubscription } from "../../services/subscription.service";
 
-function SubscriptionCard({
-  channel,
-  refresh,
-}) {
+function SubscriptionCard({ channel, refresh }) {
   const handleUnsubscribe = async () => {
     try {
       await toggleSubscription(channel._id);
@@ -22,7 +19,6 @@ function SubscriptionCard({
 
   return (
     <div className="bg-zinc-900 rounded-xl p-6 flex items-center justify-between">
-
       <Link
         to={`/channel/${channel.username}`}
         className="flex items-center gap-4"
@@ -34,17 +30,10 @@ function SubscriptionCard({
         />
 
         <div>
+          <h2 className="text-xl font-semibold">{channel.fullName}</h2>
 
-          <h2 className="text-xl font-semibold">
-            {channel.fullName}
-          </h2>
-
-          <p className="text-zinc-400">
-            @{channel.username}
-          </p>
-
+          <p className="text-zinc-400">@{channel.username}</p>
         </div>
-
       </Link>
 
       <button
@@ -53,7 +42,6 @@ function SubscriptionCard({
       >
         Unsubscribe
       </button>
-
     </div>
   );
 }

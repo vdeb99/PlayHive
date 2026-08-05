@@ -21,13 +21,10 @@ import Settings from "../pages/Settings/Settings";
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
-      {/* Routes with Navbar + Sidebar */}
       <Route element={<Layout />}>
-
         <Route path="/" element={<Home />} />
 
         <Route path="/watch/:videoId" element={<Watch />} />
@@ -107,10 +104,8 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
       </Route>
 
-      
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

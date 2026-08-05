@@ -4,208 +4,180 @@ import toast from "react-hot-toast";
 import { registerUser } from "../../services/auth.service";
 
 function SignupForm() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        fullName: "",
-        username: "",
-        email: "",
-        password: "",
+  const [formData, setFormData] = useState({
+    fullName: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const [avatar, setAvatar] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
+
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [coverPreview, setCoverPreview] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    const [avatar, setAvatar] = useState(null);
-    const [coverImage, setCoverImage] = useState(null);
+  const handleAvatar = (e) => {
+    const file = e.target.files[0];
 
-    const [avatarPreview, setAvatarPreview] = useState("");
-    const [coverPreview, setCoverPreview] = useState("");
+    if (!file) return;
 
-    const [loading, setLoading] = useState(false);
+    setAvatar(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
+  const handleCover = (e) => {
+    const file = e.target.files[0];
 
-    const handleAvatar = (e) => {
-        const file = e.target.files[0];
+    if (!file) return;
 
-        if (!file) return;
+    setCoverImage(file);
+    setCoverPreview(URL.createObjectURL(file));
+  };
 
-        setAvatar(file);
-        setAvatarPreview(URL.createObjectURL(file));
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleCover = (e) => {
-        const file = e.target.files[0];
+    if (
+      !formData.fullName ||
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !avatar
+    ) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
 
-        if (!file) return;
+    try {
+      setLoading(true);
 
-        setCoverImage(file);
-        setCoverPreview(URL.createObjectURL(file));
-    };
+      const data = new FormData();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+      data.append("fullName", formData.fullName);
+      data.append("username", formData.username);
+      data.append("email", formData.email);
+      data.append("password", formData.password);
 
-        if (
-            !formData.fullName ||
-            !formData.username ||
-            !formData.email ||
-            !formData.password ||
-            !avatar
-        ) {
-            toast.error("Please fill all required fields.");
-            return;
-        }
+      data.append("avatar", avatar);
 
-        try {
-            setLoading(true);
+      if (coverImage) {
+        data.append("coverImage", coverImage);
+      }
 
-            const data = new FormData();
+      const response = await registerUser(data);
 
-            data.append("fullName", formData.fullName);
-            data.append("username", formData.username);
-            data.append("email", formData.email);
-            data.append("password", formData.password);
+      console.log(response.data);
 
-            data.append("avatar", avatar);
+      toast.success("Registration Successful!");
 
-            if (coverImage) {
-                data.append("coverImage", coverImage);
-            }
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
 
-            const response = await registerUser(data);
+      toast.error(error.response?.data?.message || "Registration Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            console.log(response.data);
+  return (
+    <div className="w-full max-w-lg bg-zinc-900 rounded-2xl p-8 shadow-lg">
+      <h1 className="text-3xl font-bold text-center mb-8">Create Account</h1>
 
-            toast.success("Registration Successful!");
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <input
+          type="text"
+          name="fullName"
+          placeholder="Full Name"
+          value={formData.fullName}
+          onChange={handleChange}
+          className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
+        />
 
-            navigate("/login");
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={handleChange}
+          className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
+        />
 
-        } catch (error) {
-            console.error(error);
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
+        />
 
-            toast.error(
-                error.response?.data?.message ||
-                "Registration Failed"
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
+        />
 
-    return (
-        <div className="w-full max-w-lg bg-zinc-900 rounded-2xl p-8 shadow-lg">
+        <div>
+          <label className="block mb-2">Avatar *</label>
 
-            <h1 className="text-3xl font-bold text-center mb-8">
-                Create Account
-            </h1>
+          <input type="file" accept="image/*" onChange={handleAvatar} />
 
-            <form
-                onSubmit={handleSubmit}
-                className="space-y-5"
-            >
-
-                <input
-                    type="text"
-                    name="fullName"
-                    placeholder="Full Name"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
-                />
-
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
-                />
-
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
-                />
-
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded-lg bg-zinc-800 outline-none"
-                />
-
-                <div>
-                    <label className="block mb-2">
-                        Avatar *
-                    </label>
-
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatar}
-                    />
-
-                    {avatarPreview && (
-                        <img
-                            src={avatarPreview}
-                            alt="Avatar Preview"
-                            className="w-24 h-24 rounded-full mt-3 object-cover"
-                        />
-                    )}
-                </div>
-
-                <div>
-                    <label className="block mb-2">
-                        Cover Image (Optional)
-                    </label>
-
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleCover}
-                    />
-
-                    {coverPreview && (
-                        <img
-                            src={coverPreview}
-                            alt="Cover Preview"
-                            className="w-full h-36 rounded-lg mt-3 object-cover"
-                        />
-                    )}
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-red-600 hover:bg-red-700 py-3 rounded-lg font-semibold transition"
-                >
-                    {loading ? "Creating Account..." : "Sign Up"}
-                </button>
-
-            </form>
-
-            <p className="text-center mt-6 text-zinc-400">
-                Already have an account?{" "}
-                <Link
-                    to="/login"
-                    className="text-red-500 hover:underline"
-                >
-                    Login
-                </Link>
-            </p>
-
+          {avatarPreview && (
+            <img
+              src={avatarPreview}
+              alt="Avatar Preview"
+              className="w-24 h-24 rounded-full mt-3 object-cover"
+            />
+          )}
         </div>
-    );
+
+        <div>
+          <label className="block mb-2">Cover Image (Optional)</label>
+
+          <input type="file" accept="image/*" onChange={handleCover} />
+
+          {coverPreview && (
+            <img
+              src={coverPreview}
+              alt="Cover Preview"
+              className="w-full h-36 rounded-lg mt-3 object-cover"
+            />
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-red-600 hover:bg-red-700 py-3 rounded-lg font-semibold transition"
+        >
+          {loading ? "Creating Account..." : "Sign Up"}
+        </button>
+      </form>
+
+      <p className="text-center mt-6 text-zinc-400">
+        Already have an account?{" "}
+        <Link to="/login" className="text-red-500 hover:underline">
+          Login
+        </Link>
+      </p>
+    </div>
+  );
 }
 
 export default SignupForm;

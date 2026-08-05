@@ -16,7 +16,6 @@ import { addToHistory } from "../../services/history.service";
 import { getComments, addComment } from "../../services/comment.service";
 import { getVideoById, incrementVideoView } from "../../services/video.service";
 
-
 function Watch() {
   const { videoId } = useParams();
   const navigate = useNavigate();

@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import {
-  getHistory,
-  clearHistory,
-} from "../../services/history.service";
+import { getHistory, clearHistory } from "../../services/history.service";
 
 import HistoryCard from "../../components/history/HistoryCard";
 
@@ -46,20 +43,14 @@ function History() {
 
   if (loading) {
     return (
-      <div className="text-center mt-20 text-white">
-        Loading History...
-      </div>
+      <div className="text-center mt-20 text-white">Loading History...</div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
-
       <div className="flex justify-between items-center mb-8">
-
-        <h1 className="text-4xl font-bold">
-          Watch History
-        </h1>
+        <h1 className="text-4xl font-bold">Watch History</h1>
 
         {history.length > 0 && (
           <button
@@ -69,7 +60,6 @@ function History() {
             Clear History
           </button>
         )}
-
       </div>
 
       {history.length === 0 ? (
@@ -79,15 +69,10 @@ function History() {
       ) : (
         <div className="space-y-6">
           {history.map((video) => (
-            <HistoryCard
-              key={video._id}
-              video={video}
-              refresh={loadHistory}
-            />
+            <HistoryCard key={video._id} video={video} refresh={loadHistory} />
           ))}
         </div>
       )}
-
     </div>
   );
 }

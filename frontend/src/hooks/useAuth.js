@@ -2,10 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import { getCurrentUser } from "../services/auth.service";
-import {
-  loginSuccess,
-  authFinished,
-} from "../redux/slices/authSlice";
+import { loginSuccess, authFinished } from "../redux/slices/authSlice";
 
 function useAuth() {
   const dispatch = useDispatch();

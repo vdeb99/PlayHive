@@ -1,21 +1,13 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import {
-  User,
-  Image,
-  Lock,
-  LogOut,
-} from "lucide-react";
+import { User, Image, Lock, LogOut } from "lucide-react";
 
 import EditProfileModal from "../../components/profile/EditProfileModal";
 import ChangePasswordModal from "../../components/channel/ChangePasswordModal";
 import ImageUploader from "../../components/profile/ImageUploader";
 
-import {
-  updateAvatar,
-  updateCoverImage,
-} from "../../services/profile.service";
+import { updateAvatar, updateCoverImage } from "../../services/profile.service";
 
 import { logoutUser } from "../../services/auth.service";
 
@@ -39,9 +31,7 @@ function Settings() {
       toast.success("Avatar updated");
       window.location.reload();
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Failed"
-      );
+      toast.error(err.response?.data?.message || "Failed");
     }
   };
 
@@ -51,9 +41,7 @@ function Settings() {
       toast.success("Cover updated");
       window.location.reload();
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Failed"
-      );
+      toast.error(err.response?.data?.message || "Failed");
     }
   };
 
@@ -79,15 +67,11 @@ function Settings() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
-
-      <h1 className="text-4xl font-bold mb-10">
-        Settings
-      </h1>
+      <h1 className="text-4xl font-bold mb-10">Settings</h1>
 
       {/* Profile Card */}
 
       <div className="bg-zinc-900 rounded-2xl p-8 flex items-center gap-8">
-
         <img
           src={user.avatar}
           alt={user.fullName}
@@ -95,33 +79,20 @@ function Settings() {
         />
 
         <div>
+          <h2 className="text-3xl font-bold">{user.fullName}</h2>
 
-          <h2 className="text-3xl font-bold">
-            {user.fullName}
-          </h2>
+          <p className="text-zinc-400 mt-2">@{user.username}</p>
 
-          <p className="text-zinc-400 mt-2">
-            @{user.username}
-          </p>
-
-          <p className="text-zinc-500 mt-1">
-            {user.email}
-          </p>
-
+          <p className="text-zinc-500 mt-1">{user.email}</p>
         </div>
-
       </div>
 
       {/* Settings */}
 
       <div className="bg-zinc-900 rounded-2xl mt-10 p-8">
-
-        <h2 className="text-2xl font-semibold mb-8">
-          Account
-        </h2>
+        <h2 className="text-2xl font-semibold mb-8">Account</h2>
 
         <div className="space-y-5">
-
           <button
             onClick={() => setShowEdit(true)}
             className="w-full flex items-center gap-4 bg-zinc-800 hover:bg-zinc-700 rounded-xl px-5 py-4 transition"
@@ -157,9 +128,7 @@ function Settings() {
             <LogOut size={22} />
             Logout
           </button>
-
         </div>
-
       </div>
 
       {showEdit && (
@@ -171,11 +140,8 @@ function Settings() {
       )}
 
       {showPassword && (
-        <ChangePasswordModal
-          onClose={() => setShowPassword(false)}
-        />
+        <ChangePasswordModal onClose={() => setShowPassword(false)} />
       )}
-
     </div>
   );
 }

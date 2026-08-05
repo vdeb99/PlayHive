@@ -3,130 +3,98 @@ import { useNavigate } from "react-router-dom";
 import { uploadVideo } from "../../services/video.service";
 
 function UploadForm() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
+  const [thumbnail, setThumbnail] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
 
-    const [thumbnail, setThumbnail] = useState(null);
-    const [videoFile, setVideoFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleSubmit = async (e) => {
+    if (!title || !description || !thumbnail || !videoFile) {
+      alert("Please fill all fields.");
+      return;
+    }
 
-        e.preventDefault();
+    const formData = new FormData();
 
-        if (!title || !description || !thumbnail || !videoFile) {
-            alert("Please fill all fields.");
-            return;
-        }
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("thumbnail", thumbnail);
+    formData.append("videoFile", videoFile);
 
-        const formData = new FormData();
+    try {
+      setLoading(true);
 
-        formData.append("title", title);
-        formData.append("description", description);
-        formData.append("thumbnail", thumbnail);
-        formData.append("videoFile", videoFile);
+      const response = await uploadVideo(formData);
 
-        try {
+      console.log(response.data);
 
-            setLoading(true);
+      alert("Video uploaded successfully!");
 
-            const response = await uploadVideo(formData);
+      navigate("/");
+    } catch (err) {
+      console.error(err);
 
-            console.log(response.data);
+      alert(err.response?.data?.message || "Upload failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            alert("Video uploaded successfully!");
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-zinc-900 rounded-xl p-8 space-y-5"
+    >
+      <h1 className="text-3xl font-bold">Upload Video</h1>
 
-            navigate("/");
+      <input
+        type="text"
+        placeholder="Title"
+        className="w-full p-3 rounded bg-zinc-800"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
 
-        } catch (err) {
+      <textarea
+        placeholder="Description"
+        className="w-full p-3 rounded bg-zinc-800"
+        rows={5}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
 
-            console.error(err);
+      <div>
+        <label className="block mb-2">Thumbnail</label>
 
-            alert(
-                err.response?.data?.message ||
-                "Upload failed"
-            );
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setThumbnail(e.target.files[0])}
+        />
+      </div>
 
-        } finally {
+      <div>
+        <label className="block mb-2">Video</label>
 
-            setLoading(false);
+        <input
+          type="file"
+          accept="video/*"
+          onChange={(e) => setVideoFile(e.target.files[0])}
+        />
+      </div>
 
-        }
-    };
-
-    return (
-        <form
-            onSubmit={handleSubmit}
-            className="bg-zinc-900 rounded-xl p-8 space-y-5"
-        >
-
-            <h1 className="text-3xl font-bold">
-                Upload Video
-            </h1>
-
-            <input
-                type="text"
-                placeholder="Title"
-                className="w-full p-3 rounded bg-zinc-800"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
-
-            <textarea
-                placeholder="Description"
-                className="w-full p-3 rounded bg-zinc-800"
-                rows={5}
-                value={description}
-                onChange={(e) =>
-                    setDescription(e.target.value)
-                }
-            />
-
-            <div>
-
-                <label className="block mb-2">
-                    Thumbnail
-                </label>
-
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) =>
-                        setThumbnail(e.target.files[0])
-                    }
-                />
-
-            </div>
-
-            <div>
-
-                <label className="block mb-2">
-                    Video
-                </label>
-
-                <input
-                    type="file"
-                    accept="video/*"
-                    onChange={(e) =>
-                        setVideoFile(e.target.files[0])
-                    }
-                />
-
-            </div>
-
-            <button
-                disabled={loading}
-                className="bg-red-600 px-6 py-3 rounded-lg"
-            >
-                {loading ? "Uploading..." : "Upload Video"}
-            </button>
-
-        </form>
-    );
+      <button disabled={loading} className="bg-red-600 px-6 py-3 rounded-lg">
+        {loading ? "Uploading..." : "Upload Video"}
+      </button>
+    </form>
+  );
 }
 
 export default UploadForm;
