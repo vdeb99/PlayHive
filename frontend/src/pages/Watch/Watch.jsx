@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-
 
 import VideoPlayer from "../../components/video/VideoPlayer";
 import VideoInfo from "../../components/video/VideoInfo";
@@ -18,16 +16,6 @@ import { getVideoById, incrementVideoView } from "../../services/video.service";
 
 function Watch() {
   const { videoId } = useParams();
-  
-  const { isAuthenticated, loading } = useSelector(
-  (state) => state.auth
-);
-
-useEffect(() => {
-  if (!loading && !isAuthenticated) {
-    navigate("/login");
-  }
-}, [loading, isAuthenticated, navigate]);
 
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
@@ -50,11 +38,19 @@ useEffect(() => {
         isLiked: data.isLiked || false,
       });
 
-      await incrementVideoView(videoId);
+      if (!hasViewed.current) {
+        hasViewed.current = true;
 
-      await addToHistory(videoId);
-    } catch (error) {
-      console.error(error);
+        await incrementVideoView(videoId);
+
+        try {
+          await addToHistory(videoId);
+        } catch (err) {
+          console.log("History not added");
+        }
+      }
+    } catch (err) {
+      console.error(err);
       setError("Failed to load video.");
     }
   };
@@ -64,8 +60,8 @@ useEffect(() => {
       const response = await getComments(videoId);
 
       setComments(response.data.data.comments || []);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -76,8 +72,8 @@ useEffect(() => {
       await addComment(videoId, content);
 
       await fetchComments();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     } finally {
       setCommentLoading(false);
     }
@@ -89,12 +85,7 @@ useEffect(() => {
     const loadData = async () => {
       setLoading(true);
 
-      if (!hasViewed.current) {
-        hasViewed.current = true;
-        await fetchVideo();
-      }
-
-      await fetchComments();
+      await Promise.all([fetchVideo(), fetchComments()]);
 
       setLoading(false);
     };
@@ -104,7 +95,7 @@ useEffect(() => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-zinc-950">
         <h1 className="text-2xl text-white">Loading...</h1>
       </div>
     );
@@ -112,7 +103,7 @@ useEffect(() => {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-zinc-950">
         <h1 className="text-red-500 text-2xl">{error}</h1>
       </div>
     );
@@ -120,7 +111,7 @@ useEffect(() => {
 
   if (!video) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-zinc-950">
         <h1 className="text-red-500 text-2xl">Video Not Found</h1>
       </div>
     );
