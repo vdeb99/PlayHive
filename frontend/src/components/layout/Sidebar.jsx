@@ -17,7 +17,20 @@ function Sidebar() {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
-    <aside className="w-64 h-[calc(100vh-64px)] sticky top-16 bg-zinc-900 border-r border-zinc-800 p-4">
+    <aside
+      className="
+        hidden
+        lg:block
+        w-64
+        h-[calc(100vh-64px)]
+        sticky
+        top-16
+        bg-zinc-900
+        border-r
+        border-zinc-800
+        p-4
+    "
+    >
       <div className="space-y-2">
         <SidebarItem to="/" icon={Home} title="Home" />
 
