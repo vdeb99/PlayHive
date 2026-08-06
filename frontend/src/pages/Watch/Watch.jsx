@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+
 
 import VideoPlayer from "../../components/video/VideoPlayer";
 import VideoInfo from "../../components/video/VideoInfo";
@@ -18,12 +18,16 @@ import { getVideoById, incrementVideoView } from "../../services/video.service";
 
 function Watch() {
   const { videoId } = useParams();
-  const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  
+  const { isAuthenticated, loading } = useSelector(
+  (state) => state.auth
+);
 
-  if (!isAuthenticated) {
+useEffect(() => {
+  if (!loading && !isAuthenticated) {
     navigate("/login");
   }
+}, [loading, isAuthenticated, navigate]);
 
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
