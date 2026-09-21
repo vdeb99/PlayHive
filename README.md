@@ -432,10 +432,3 @@ This project demonstrates:
 
 ------------------------------------------------------------------------
 
-# Resume Summary
-
-PlayHive is a production-style video streaming MERN application that demonstrates
-end-to-end software engineering, including secure authentication, media
-uploads, creator dashboards, subscriptions, playlists, comments, likes,
-watch history, search, profile management, and scalable REST API
-development.
